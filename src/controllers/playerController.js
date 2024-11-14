@@ -3,6 +3,77 @@ const Achievement = require('../models/Achievement');
 const ResponseHelper = require('../utils/responseHelper');
 const GAME_CONFIG = require('../config/gameConfig');
 
+exports.updateStats = async (req, res) => {
+    try {
+        const { walletAddress } = req.params;
+        const { score, wavesCompleted } = req.body;
+        
+        const player = await Player.findOne({ walletAddress });
+        if (!player) {
+            return ResponseHelper.error(res, new Error('Player not found'), 404);
+        }
+
+        player.stats.gamesPlayed += 1;
+        player.stats.highScore = Math.max(player.stats.highScore, score);
+        player.stats.wavesCompleted += wavesCompleted;
+
+        await player.save();
+        return ResponseHelper.success(res, player.stats);
+    } catch (error) {
+        return ResponseHelper.error(res, error);
+    }
+};
+
+exports.registerPlayer = async (req, res) => {
+    try {
+        const { walletAddress, username } = req.body;
+        const player = new Player({ walletAddress, username });
+        await player.save();
+        return ResponseHelper.success(res, player);
+    } catch (error) {
+        return ResponseHelper.error(res, error);
+    }
+};
+
+exports.getPlayerStats = async (req, res) => {
+    try {
+        const player = await Player.findOne({ walletAddress: req.params.address });
+        if (!player) return ResponseHelper.error(res, new Error('Player not found'), 404);
+        return ResponseHelper.success(res, player);
+    } catch (error) {
+        return ResponseHelper.error(res, error);
+    }
+};
+
+exports.updateInventory = async (req, res) => {
+    try {
+        const { walletAddress } = req.params;
+        const { arrowType, quantity } = req.body;
+        const player = await Player.findOne({ walletAddress });
+        if (!player) return ResponseHelper.error(res, new Error('Player not found'), 404);
+
+        player.inventory[arrowType] += quantity;
+        await player.save();
+        return ResponseHelper.success(res, player.inventory);
+    } catch (error) {
+        return ResponseHelper.error(res, error);
+    }
+};
+
+exports.craftArrows = async (req, res) => {
+    try {
+        const { walletAddress } = req.params;
+        const { arrowType, quantity } = req.body;
+        const player = await Player.findOne({ walletAddress });
+        if (!player) return ResponseHelper.error(res, new Error('Player not found'), 404);
+
+        // Add crafting logic
+        return ResponseHelper.success(res, player);
+    } catch (error) {
+        return ResponseHelper.error(res, error);
+    }
+};
+
 exports.updateProgress = async (req, res) => {
     try {
         const { walletAddress } = req.params;

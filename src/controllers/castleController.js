@@ -108,6 +108,16 @@ exports.specializeCastle = async (req, res) => {
 };
 
 // Helper functions
+function meetsRequirements(player, requirements) {
+    const { resources, level } = requirements;
+    return (
+        player.resources.wood >= resources.wood &&
+        player.resources.iron >= resources.iron &&
+        player.resources.gold >= resources.gold &&
+        player.castle?.level >= level
+    );
+}
+
 function calculateUpgradeRequirements(type, level, path) {
     const baseCost = GAME_CONFIG.CASTLE.UPGRADES[type];
     const scalingFactor = Math.pow(1.5, level);
