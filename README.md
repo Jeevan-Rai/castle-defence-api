@@ -198,9 +198,9 @@ http://localhost:5000/api/docs
 - Resource optimization
 
 ## Contact
-[Your Name]
-[Your Email]
-[Your Phone Number]
+Jeevan P Rai
+jeevanraisonangeri@gmail.com
++91 7618752850
 
 ---
 
